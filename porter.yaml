@@ -11,5 +11,5 @@ resources:
       ingress:
         enabled: false
       container:
-        command: node index.js
+        command: node index.js x
         port: 3000
