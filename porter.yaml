@@ -1,8 +1,4 @@
 apps:
-  neutrino-router-web:
-    run: "uvicorn main:app --host=0.0.0.0 --port=5000"
-    port: 5000
-  neutrino-router-worker:
-    run: "python -u worker.py"
-  neutrino-router-simulation-worker:
-    run: "celery -A modules.router_simulation_training.simulation_worker worker --loglevel=info"
+  something-job:
+    run: "env"
+    allowConcurrent: true
