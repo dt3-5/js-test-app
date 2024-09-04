@@ -19,7 +19,7 @@ jobs:
       run: exec porter apply
       env:
         PORTER_CLUSTER: "1"
-        PORTER_DEPLOYMENT_TARGET_ID: 3d232aaf-6827-4bde-8bd2-141aeacf4577
+        PORTER_DEPLOYMENT_TARGET_ID: b29b5d7c-c7a1-4026-93fc-a398fcc8ceb7
         PORTER_HOST: https://dgtown2.withporter.run
         PORTER_PR_NUMBER: ${{ github.event.number }}
         PORTER_PROJECT: "1"
