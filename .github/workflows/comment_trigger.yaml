@@ -8,37 +8,72 @@ jobs:
     if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/review') }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          
-      - name: Get PR details
-        id: get-pr
-        uses: octokit/request-action@v2.x
-        with:
-          route: GET /repos/${{ github.repository }}/pulls/${{ github.event.issue.number }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
-      - name: Add review label
+      - name: Start check run
+        id: create-check
         uses: actions/github-script@v7
         with:
           script: |
-            github.rest.issues.addLabels({
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+
+            const { data: check } = await github.rest.checks.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: 'Review Status',
+              head_sha: pr.head.sha,
+              status: 'in_progress',
+              started_at: new Date().toISOString(),
+              output: {
+                title: 'Processing Review Request',
+                summary: 'Processing /review command...'
+              }
+            });
+            
+            return check.id;
+
+      - name: Add label and comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Add the review label
+            await github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
               labels: ['needs-review']
-            })
+            });
             
-      - name: Comment on PR
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.createComment({
+            // Add the comment
+            await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
               body: '👀 Review requested! I've added the needs-review label.'
-            })
+            });
+
+      - name: Complete check run
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+
+            await github.rest.checks.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: 'Review Status',
+              head_sha: pr.head.sha,
+              status: 'completed',
+              conclusion: 'success',
+              completed_at: new Date().toISOString(),
+              output: {
+                title: 'Review Requested',
+                summary: 'Review has been requested successfully via /review command'
+              }
+            });
