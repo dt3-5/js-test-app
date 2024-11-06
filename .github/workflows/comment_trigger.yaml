@@ -29,10 +29,11 @@ jobs:
             const { data: check } = await github.rest.checks.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              name: '🤖 Claude Review 🤖',
+              name: 'Review Request',
               head_sha: pr.head.sha,
               status: 'in_progress',
               started_at: new Date().toISOString(),
+              details_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               output: {
                 title: 'Processing Review Request',
                 summary: 'Processing /review command...'
@@ -82,6 +83,7 @@ jobs:
               status: 'completed',
               conclusion: 'success',
               completed_at: new Date().toISOString(),
+              details_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               output: {
                 title: 'Review Requested',
                 summary: 'Review has been requested successfully via /review command'
