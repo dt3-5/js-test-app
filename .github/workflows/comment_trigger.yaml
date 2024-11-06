@@ -1,4 +1,4 @@
-name: Review Command
+name: Review Request
 on:
   issue_comment:
     types: [created]
@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   handle-review-command:
+    name: Process Review Request
     if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/review') }}
     runs-on: ubuntu-latest
     steps:
@@ -27,7 +28,7 @@ jobs:
             const { data: check } = await github.rest.checks.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              name: 'Review Status',
+              name: 'Review Request',
               head_sha: pr.head.sha,
               status: 'in_progress',
               started_at: new Date().toISOString(),
@@ -72,7 +73,7 @@ jobs:
             await github.rest.checks.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              name: 'Review Status',
+              name: 'Review Request',
               head_sha: pr.head.sha,
               status: 'completed',
               conclusion: 'success',
