@@ -6,7 +6,7 @@ on:
 permissions:
   checks: write
   pull-requests: write
-  issues: write 
+  issues: write
 
 jobs:
   handle-review-command:
@@ -56,7 +56,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: '👀 Review requested! I've added the needs-review label.'
+              body: '👀 Review requested! I have added the needs-review label.'
             });
 
       - name: Complete check run
