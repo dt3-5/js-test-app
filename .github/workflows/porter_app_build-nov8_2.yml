@@ -17,7 +17,7 @@ jobs:
             with:
                 repository: porter-dev/code
                 ref: 'dgtown/dev-cli'
-                token: ${{ secrets.CLI_PAT }}  # Need PAT if CLI repo is private 
+                token: ${{ secrets.DEV_CLI_TOKEN }}  # Need PAT if CLI repo is private 
           - name: Build and install CLI
             working-directory: legacy-backend
             run: |
